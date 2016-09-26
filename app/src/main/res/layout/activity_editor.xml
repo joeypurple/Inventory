@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp"
+    tools:context=".EditorActivity">
+
+    <!-- Overview category -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <!-- Label -->
+        <TextView
+            android:text="@string/category_overview"
+            style="@style/CategoryStyle" />
+
+        <!-- Input fields -->
+        <LinearLayout
+            android:layout_height="wrap_content"
+            android:layout_width="0dp"
+            android:layout_weight="2"
+            android:paddingLeft="4dp"
+            android:orientation="vertical">
+
+            <!-- Name field -->
+            <EditText
+                android:id="@+id/edit_item_name"
+                android:hint="@string/hint_item_name"
+                android:inputType="textCapWords"
+                style="@style/EditorFieldStyle" />
+
+            <!-- Quantity field -->
+
+            <EditText
+                android:id="@+id/edit_quantity"
+                android:hint="@string/hint_item_quantity"
+                android:inputType="number"
+                style="@style/EditorFieldStyle" />
+
+            <!-- Price field -->
+
+
+            <EditText
+                android:id="@+id/edit_price"
+                android:hint="@string/hint_price"
+                android:inputType="numberDecimal"
+                style="@style/EditorFieldStyle" />
+
+            <!-- Image field -->
+
+            <ImageView
+                android:id="@+id/edit_image"
+                android:layout_width="50dp"
+                android:layout_height="50dp" />
+
+            <Button
+                android:onClick="addPhoto"
+                android:id="@+id/add_photo_button"
+                android:text="Add Photo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+
+
+        </LinearLayout>
+    </LinearLayout>
+</LinearLayout>
