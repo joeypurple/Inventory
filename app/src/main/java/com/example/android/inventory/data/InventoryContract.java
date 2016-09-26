@@ -9,6 +9,8 @@ import android.provider.BaseColumns;
  */
 public final class InventoryContract {
 
+
+
     private InventoryContract() {}
 
     public static final String CONTENT_AUTHORITY = "com.example.android.inventory";
@@ -35,6 +37,14 @@ public final class InventoryContract {
         public static final String COLUMN_PRICE = "price";
         public static final String COLUMN_IMAGE = "image";
 
+
+        public static String getIdFromUri(Uri uri) {
+            return uri.getPathSegments().get(1);
+        }
+
+
+
     }
+
 
 }
