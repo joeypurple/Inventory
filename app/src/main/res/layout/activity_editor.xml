@@ -29,6 +29,7 @@
 
             <!-- Name field -->
             <EditText
+                android:layout_weight="1"
                 android:id="@+id/edit_item_name"
                 android:hint="@string/hint_item_name"
                 android:inputType="textCapWords"
@@ -37,6 +38,7 @@
             <!-- Quantity field -->
 
             <EditText
+                android:layout_weight="1"
                 android:id="@+id/edit_quantity"
                 android:hint="@string/hint_item_quantity"
                 android:inputType="number"
@@ -46,6 +48,7 @@
 
 
             <EditText
+                android:layout_weight="1"
                 android:id="@+id/edit_price"
                 android:hint="@string/hint_price"
                 android:inputType="numberDecimal"
@@ -54,18 +57,18 @@
             <!-- Image field -->
 
             <ImageView
+                android:layout_weight="2"
                 android:id="@+id/edit_image"
-                android:layout_width="50dp"
-                android:layout_height="50dp" />
+                android:layout_width="200dp"
+                android:layout_height="200dp" />
 
             <Button
+                android:layout_weight="1"
                 android:onClick="addPhoto"
                 android:id="@+id/add_photo_button"
                 android:text="Add Photo"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
-
-
 
         </LinearLayout>
     </LinearLayout>

@@ -70,7 +70,7 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
 
     private Uri selectedImageUri;
 
-    String id = "";
+    //String id = "";
 
 
 
@@ -92,6 +92,7 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_editor);
+
 
         //Find all relevant views needed to read user input
         mNameEditText = (EditText) findViewById(R.id.edit_item_name);
@@ -123,12 +124,17 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
 
             Intent details = getIntent();
    //         id  = details.getIntExtra("id",0);
+            Long id = details.getLongExtra("id",0);
+
             ContextWrapper cw = new ContextWrapper(this);
             File dir = cw.getFilesDir();
 
             // Load product image
            String imageLocationDir = dir.toString();
    //         id = details.getIntExtra("id", 0);
+
+
+
             String imagePath = imageLocationDir + "/" + id;
             Bitmap bitmap = BitmapFactory.decodeFile(imagePath);
             mImageEdit.setImageBitmap(bitmap);
@@ -196,12 +202,6 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
 
         String id = "";
 
-        id = InventoryContract.InventoryEntry.getIdFromUri(selectedImageUri);
-        id = InventoryContract.InventoryEntry.getIdFromUri(mCurrentItemUri);
-
-
-
-
         Log.v("EditorActivity", "Image save " + imgString);
 
         Log.v("EditorActivity", "Price save " + priceString);
@@ -240,6 +240,7 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
                 Toast.makeText(this, getString(R.string.editor_insert_item_failed), Toast.LENGTH_SHORT).show();
             } else {
                 Toast.makeText(this, getString(R.string.editor_insert_item_successful), Toast.LENGTH_SHORT).show();
+                id = InventoryContract.InventoryEntry.getIdFromUri(newUri);
             }
         } else {
             //Otherwise, this is an EXISTING item, update the item with content URI:
@@ -253,6 +254,7 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
                 Toast.makeText(this, getString(R.string.editor_update_item_failed), Toast.LENGTH_SHORT).show();
             } else {
                 Toast.makeText(this, getString(R.string.editor_update_item_successful), Toast.LENGTH_SHORT).show();
+                id = InventoryContract.InventoryEntry.getIdFromUri(mCurrentItemUri);
             }
 
 
@@ -407,7 +409,7 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
             mNameEditText.setText(name);
             mQuantityEditText.setText(Integer.toString(quantity));
             mPriceEditText.setText(Double.toString(price));
-            mImageEdit.setImageDrawable(null);
+           // mImageEdit.setImageDrawable(null);
 
         }
     }
@@ -557,26 +559,11 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
     }
 
     public void addPhoto(View v){
-
-    //    saveToInternalStorage();
-
-        //API=> 23 SD Card Permissions
-        checkWriteToExternalPerms();
-        Intent externalGalleryIntent = new Intent(Intent.ACTION_GET_CONTENT);
-        //Accept only Images
-        externalGalleryIntent.setType("image/*");
-        startActivityForResult(externalGalleryIntent, PERMISSIONS_PICK_IMAGE_REQUEST_CODE);
-
-
-
-
-//        //Internal Permissions
-//        saveToInternalStorage();
-//        Intent internalGalleryIntent = new Intent();
-//        // Accept only images
-//        internalGalleryIntent.setType("image/*");
-//        internalGalleryIntent.setAction(Intent.ACTION_GET_CONTENT);
-//        startActivityForResult(Intent.createChooser(internalGalleryIntent, "Select Picture"), 1);
+        Intent intent = new Intent();
+        // Accept only images
+        intent.setType("image/*");
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+        startActivityForResult(Intent.createChooser(intent, "Select Picture"), 1);
 
     }
 
@@ -585,29 +572,22 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
                                     Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode == PERMISSIONS_PICK_IMAGE_REQUEST_CODE &&
+        if (requestCode == 1 &&
                 resultCode == RESULT_OK && null != data) {
             Toast.makeText(this, "Uploading...", Toast.LENGTH_LONG).show();
+            Uri selectedImageUri = data.getData();
             try {
                 Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), selectedImageUri);
-                mImageEdit.setImageBitmap(bitmap);
+                ImageView imageView = (ImageView) findViewById(R.id.edit_image);
+                imageView.setImageBitmap(bitmap);
 //                String filename = Long.toString(nextID);
-//                saveToInternalStorage(bitmap, filename);}
-                Uri selectedImageUri = data.getData();
-                mImagePathButton.setText(selectedImageUri.toString());
+//                saveToInternalStorage(bitmap, filename);
             } catch (IOException e) {
                 e.printStackTrace();
                 Toast.makeText(this, "Could not load image", Toast.LENGTH_SHORT).show();
             }
-
-
-                if (mImagePathButton.getText() != null) {
-                    mImageEdit.setImageURI(selectedImageUri);
-                }
-            }
-
-
         }
+    }
 
 
  private void saveToInternalStorage(Bitmap bmp, String filename) {

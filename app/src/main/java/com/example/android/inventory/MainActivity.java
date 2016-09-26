@@ -2,7 +2,6 @@ package com.example.android.inventory;
 
 import android.app.LoaderManager;
 import android.content.ContentUris;
-import android.content.ContentValues;
 import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
@@ -17,8 +16,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.android.inventory.data.InventoryContract;
 
@@ -87,6 +84,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
                 //Launch the {@link EditorActivity} to display the data for the current item
                 startActivity(intent);
+                intent.putExtra("id",id);
             }
         });
 
