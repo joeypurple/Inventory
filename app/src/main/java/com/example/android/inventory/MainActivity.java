@@ -83,8 +83,9 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                 intent.setData(currentItemUri);
 
                 //Launch the {@link EditorActivity} to display the data for the current item
-                startActivity(intent);
                 intent.putExtra("id",id);
+
+                startActivity(intent);
             }
         });
 

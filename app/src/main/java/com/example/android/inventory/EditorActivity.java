@@ -23,7 +23,6 @@ import android.support.v4.app.NavUtils;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -45,34 +44,23 @@ import java.io.IOException;
 public class EditorActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
 
     private static final int PERMISSIONS_PICK_IMAGE_REQUEST_CODE = 1;
-
+    private static final int EXISTING_ITEM_LOADER = 0;
     //Logging identifier for class
     private final String LOG_TAG = EditorActivity.class.getSimpleName();
-
-    private Button mImagePathButton;
-    private ImageView mImageEdit;
-
-
-    private static final int EXISTING_ITEM_LOADER = 0;
-    private Uri mCurrentItemUri;
-    private EditText mNameEditText;
-    private EditText mQuantityEditText;
-    private EditText mPriceEditText;
- //   private static final int SELECT_PHOTO = 100;
- //   public int id;
- //   public long nextID;
-
     public String image;
     public String price;
     public String quantity;
     public String name;
+    private Button mImagePathButton;
+    private ImageView mImageEdit;
+    private Uri mCurrentItemUri;
+    private EditText mNameEditText;
+    private EditText mQuantityEditText;
+    private EditText mPriceEditText;
     private boolean mItemHasChanged = false;
 
+
     private Uri selectedImageUri;
-
-    //String id = "";
-
-
 
 
     /**
@@ -82,7 +70,6 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
     private View.OnTouchListener mTouchListener = new View.OnTouchListener() {
         @Override
         public boolean onTouch(View view, MotionEvent motionEvent) {
-
             mItemHasChanged = true;
             return false;
         }
@@ -106,6 +93,8 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
         // we're creating a new item or editing an existing one
         Intent intent = getIntent();
         mCurrentItemUri = intent.getData();
+        Long id = intent.getLongExtra("id", 0);
+
 
         //if the intent DOES NOT contain an item content URI, then we are creating a new item
         if (mCurrentItemUri == null) {
@@ -121,17 +110,11 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
             //Initialize a loader to read the  data from the database and display
             // the current values in the editor
             getLoaderManager().initLoader(EXISTING_ITEM_LOADER, null, this);
-
-            Intent details = getIntent();
-   //         id  = details.getIntExtra("id",0);
-            Long id = details.getLongExtra("id",0);
-
             ContextWrapper cw = new ContextWrapper(this);
             File dir = cw.getFilesDir();
 
             // Load product image
-           String imageLocationDir = dir.toString();
-   //         id = details.getIntExtra("id", 0);
+            String imageLocationDir = dir.toString();
 
 
 
@@ -141,17 +124,14 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
         }
 
 
-
-
         //Setup OnTouchListeners on all the input fields so we can determine if the user has
         // touched or modified them. This will let us know if there are unsaved changees
         // or not if the user tried to leave the editor without saving
         mNameEditText.setOnTouchListener(mTouchListener);
         mQuantityEditText.setOnTouchListener(mTouchListener);
         mPriceEditText.setOnTouchListener(mTouchListener);
-        mImageEdit.setOnTouchListener(mTouchListener);
-        }
-
+        mImagePathButton.setOnTouchListener(mTouchListener);
+    }
 
 
     // Get user input from editor and save item into database
@@ -161,12 +141,7 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
         name = mNameEditText.getText().toString();
         price = mPriceEditText.getText().toString();
         quantity = mQuantityEditText.getText().toString();
-     //   image = mImageEdit.getDrawable().toString();
-
-        Log.v("EditorActivity", "Image Status: " + image);
-
-        Log.v("EditorActivity", "Name Status: " + name);
-
+        // image = mImageEdit.getDrawable().toString();
 
 
         if (name.length() == 0) {
@@ -178,15 +153,15 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
             mQuantityEditText.setError("Invalid Input");
             return;
         } else if (price.length() == 0) {
-                    Toast.makeText(getApplicationContext(), "Price Needed", Toast.LENGTH_LONG).show();
-                    mPriceEditText.setError("Invalid Price");
+            Toast.makeText(getApplicationContext(), "Price Needed", Toast.LENGTH_LONG).show();
+            mPriceEditText.setError("Invalid Price");
             return;
-       } else if (mImagePathButton.getText().toString().length() == 0) {
+        } else if (mImagePathButton.getText().toString().length() == 0) {
             Toast.makeText(getApplicationContext(), "Upload an image", Toast.LENGTH_LONG).show();
-           return;
+            return;
 
         } else {
-           saveItem();
+            saveItem();
             mImagePathButton.getText().toString();
             finish();
         }
@@ -201,10 +176,6 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
         String imgString = mImagePathButton.getText().toString();
 
         String id = "";
-
-        Log.v("EditorActivity", "Image save " + imgString);
-
-        Log.v("EditorActivity", "Price save " + priceString);
 
 
         //Check if this is supposed to be a new item and check if all fields are blank
@@ -223,10 +194,6 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
         values.put(InventoryContract.InventoryEntry.COLUMN_CURRENT_QUANTITY, quantityString);
         values.put(InventoryContract.InventoryEntry.COLUMN_PRICE, priceString);
         values.put(InventoryContract.InventoryEntry.COLUMN_IMAGE, imgString);
-
-
-
-
 
 
         //Determine if this is a new or existing item by checking if mCurrentItemUri is null or not
@@ -272,7 +239,6 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
         }
 
     }
-
 
 
     @Override
@@ -409,7 +375,7 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
             mNameEditText.setText(name);
             mQuantityEditText.setText(Integer.toString(quantity));
             mPriceEditText.setText(Double.toString(price));
-           // mImageEdit.setImageDrawable(null);
+            // mImageEdit.setImageDrawable(null);
 
         }
     }
@@ -480,7 +446,6 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
     }
 
 
-
     //Perform the deletion of the item in the database
     private void deleteItem() {
         //Only perform the delete if the item is existing
@@ -509,11 +474,9 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
         int sell = Integer.valueOf(mQuantityEditText.getText().toString());
 
 
-        if (sell == 0){
+        if (sell == 0) {
             return;
-        }
-
-        else {
+        } else {
             sell = sell - 1;
         }
 
@@ -525,7 +488,7 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
     }
 
 
-    private void receiveItem(){
+    private void receiveItem() {
 
         ContentValues values = new ContentValues();
 
@@ -558,11 +521,12 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
         }
     }
 
-    public void addPhoto(View v){
+    public void addPhoto(View v) {
         Intent intent = new Intent();
         // Accept only images
         intent.setType("image/*");
         intent.setAction(Intent.ACTION_GET_CONTENT);
+
         startActivityForResult(Intent.createChooser(intent, "Select Picture"), 1);
 
     }
@@ -580,8 +544,7 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
                 Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), selectedImageUri);
                 ImageView imageView = (ImageView) findViewById(R.id.edit_image);
                 imageView.setImageBitmap(bitmap);
-//                String filename = Long.toString(nextID);
-//                saveToInternalStorage(bitmap, filename);
+
             } catch (IOException e) {
                 e.printStackTrace();
                 Toast.makeText(this, "Could not load image", Toast.LENGTH_SHORT).show();
@@ -590,7 +553,7 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
     }
 
 
- private void saveToInternalStorage(Bitmap bmp, String filename) {
+    private void saveToInternalStorage(Bitmap bmp, String filename) {
         ContextWrapper contextWrapper = new ContextWrapper(getApplicationContext());
         File appDirectory = contextWrapper.getFilesDir();
 
